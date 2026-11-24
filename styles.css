@@ -1,0 +1,79 @@
+:root {
+  --bg: #0b1220;
+  --panel: rgba(11, 18, 32, 0.92);
+  --ink: #e8eef7;
+  --muted: #8ea0b8;
+  --accent: #5eead4;
+  --accent-ink: #062b27;
+  --line: #22304a;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); }
+#map { position: fixed; inset: 0; z-index: 0; }
+
+.panel {
+  position: relative; z-index: 10;
+  width: min(440px, calc(100% - 32px));
+  margin: 24px; padding: 28px;
+  background: var(--panel); backdrop-filter: blur(8px);
+  border: 1px solid var(--line); border-radius: 16px;
+  max-height: calc(100vh - 48px); overflow-y: auto;
+}
+.step { display: none; }
+.step.active { display: block; animation: fade .25s ease; }
+@keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; } }
+
+.eyebrow { color: var(--accent); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; margin: 0 0 8px; }
+h1 { font-family: Georgia, "Times New Roman", serif; font-weight: 400; font-size: 38px; line-height: 1.1; margin: 0 0 12px; }
+h1 em { color: var(--accent); }
+h2 { font-family: Georgia, serif; font-weight: 400; font-size: 26px; margin: 0 0 16px; }
+.lead { color: var(--muted); line-height: 1.5; }
+.small { font-size: 13px; color: var(--muted); }
+
+.btn { display: inline-block; border: 0; border-radius: 10px; padding: 12px 18px; font-size: 15px; font-weight: 600; cursor: pointer; text-decoration: none; margin-top: 12px; }
+.btn.primary { background: var(--accent); color: var(--accent-ink); width: 100%; }
+.btn.primary:hover { filter: brightness(1.08); }
+.btn.ghost { background: transparent; color: var(--muted); border: 1px solid var(--line); width: 100%; }
+
+.slider { margin-bottom: 14px; }
+.slider .row { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 4px; }
+.slider .row span:last-child { color: var(--accent); }
+input[type=range] { width: 100%; accent-color: var(--accent); }
+
+label { display: block; font-size: 14px; margin-bottom: 14px; color: var(--muted); }
+select, input:not([type=checkbox]):not([type=range]) {
+  display: block; width: 100%; margin-top: 6px; padding: 11px 12px;
+  background: #111b2e; color: var(--ink); border: 1px solid var(--line); border-radius: 8px; font-size: 15px;
+}
+form input { margin-bottom: 10px; }
+label.check { display: flex; gap: 8px; align-items: flex-start; color: var(--ink); }
+label.check input { margin-top: 3px; accent-color: var(--accent); }
+
+.teaser { padding: 0; list-style: none; counter-reset: r; margin: 0 0 16px; }
+.teaser li { counter-increment: r; display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; margin-bottom: 8px; }
+.teaser li::before { content: counter(r); color: var(--accent); font-weight: 700; margin-right: 10px; }
+.teaser li .nm { flex: 1; }
+.teaser li.locked .nm { filter: blur(5px); user-select: none; }
+.pct { color: var(--accent); font-weight: 700; }
+
+.card { border: 1px solid var(--line); border-radius: 12px; padding: 14px; margin-bottom: 10px; cursor: pointer; }
+.card:hover { border-color: var(--accent); }
+.card h3 { margin: 0 0 4px; font-size: 16px; display: flex; justify-content: space-between; }
+.bars { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 14px; margin-top: 10px; }
+.bar { font-size: 12px; color: var(--muted); }
+.bar i { display: block; height: 5px; border-radius: 3px; background: var(--line); margin-top: 3px; overflow: hidden; }
+.bar i b { display: block; height: 100%; background: var(--accent); }
+.more { font-size: 13px; color: var(--muted); margin: 6px 0 0; }
+.cta { margin-top: 16px; padding: 16px; border-radius: 12px; background: #0f2a2a; border: 1px solid #1d4d48; }
+.cta p { margin: 0 0 4px; }
+
+.disclaimer { position: fixed; right: 12px; bottom: 6px; z-index: 10; font-size: 11px; color: var(--muted); margin: 0; }
+.leaflet-container { background: var(--bg); }
+.leaflet-tile-pane { filter: invert(1) hue-rotate(185deg) brightness(0.75) contrast(0.9) saturate(0.6); }
+.pin-label { background: transparent; border: 0; box-shadow: none; color: var(--ink); font-weight: 600; font-size: 12px; text-shadow: 0 0 4px #000; }
+
+@media (max-width: 600px) {
+  .panel { margin: 12px auto; margin-top: 40vh; }
+  h1 { font-size: 30px; }
+}
