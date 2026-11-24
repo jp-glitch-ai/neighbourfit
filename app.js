@@ -5,6 +5,11 @@
   const weights = Object.fromEntries(FACTORS.map((f) => [f.key, 3]));
   const LEVELS = ["Don't care", "A little", "Somewhat", "Important", "Very", "Must have"];
   let ranked = [];
+  // City median of the crime index, so a card can say "below/above city".
+  const CITY_CRIME = (() => {
+    const v = HOODS.map((h) => h.facts && h.facts.crimePer100k).filter((x) => x != null).sort((a, b) => a - b);
+    return v.length ? v[Math.floor(v.length / 2)] : Infinity;
+  })();
 
   document.title = `${C.brand} — find your Toronto neighbourhood`;
   $("#n-count").textContent = HOODS.length;
@@ -53,7 +58,7 @@
     let num = 0, den = 0;
     for (const f of FACTORS) { num += weights[f.key] * h[f.key]; den += weights[f.key] * 10; }
     let s = den ? num / den : 0.5;
-    if (h.price > budget) s *= Math.max(0.5, 1 - (h.price - budget) / budget); // over-budget penalty
+    if (h.price && h.price > budget) s *= Math.max(0.5, 1 - (h.price - budget) / budget); // over-budget penalty
     return Math.round(s * 100);
   }
   function computeMatches() {
@@ -126,11 +131,22 @@
   function renderReport(lead) {
     $("#report-title").textContent = `${lead.name}, here's where you fit`;
     const bars = (h) => FACTORS.map((f) =>
-      `<div class="bar">${f.label}<i><b style="width:${h[f.key] * 10}%"></b></i></div>`).join("");
+      `<div class="bar" title="${f.source || ""}">${f.label}<i><b style="width:${h[f.key] * 10}%"></b></i></div>`).join("");
+    const money = (k) => k >= 1000 ? `$${(k / 1000).toFixed(2)}M` : `$${k}K`;
+    const facts = (h) => {
+      const x = h.facts || {}, out = [];
+      if (x.eqao != null) out.push(`EQAO avg ${x.eqao}% (${x.schoolsNearby} schools)`);
+      if (x.crimePer100k != null) out.push(`${x.crimePer100k < CITY_CRIME ? "Below" : "Above"} city crime index`);
+      if (x.greenPct != null) out.push(`${x.greenPct}% green space`);
+      if (x.subway) out.push("Subway within 800 m");
+      if (x.kidsPct != null) out.push(`${x.kidsPct}% kids under 15`);
+      return out.map((t) => `<span>${t}</span>`).join("");
+    };
     $("#report").innerHTML = ranked.slice(0, 5).map((h) => `
       <div class="card" data-i="${h.i}">
         <h3><span>${h.name}</span><span class="pct">${h.match}%</span></h3>
-        <div class="small">Typical home ≈ $${(h.price / 1000).toFixed(1)}M</div>
+        ${h.price ? `<div class="small">Median home value ≈ ${money(h.price)} <span class="muted">(2021 Census)</span></div>` : ""}
+        <div class="facts">${facts(h)}</div>
         <div class="bars">${bars(h)}</div>
       </div>`).join("") +
       `<p class="more">Also worth a look: ${ranked.slice(5, 10).map((h) => `${h.name} (${h.match}%)`).join(", ")}</p>`;

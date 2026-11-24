@@ -30,13 +30,14 @@ Without an endpoint, leads are kept in the browser's localStorage (`nf_leads`) f
 
 ≥60 = HOT, ≥30 = WARM, else NURTURE. Tweak in `app.js → leadScore()`.
 
-## Data — read before marketing
-`data/neighbourhoods.js` ships with **illustrative estimates** (1–10) for 32 neighbourhoods so the app works today. Replace with real figures before making claims:
-- Boundaries & profiles: Toronto Open Data "Neighbourhoods" + "Neighbourhood Profiles"
-- Safety: Toronto Police Service neighbourhood crime rates
-- Schools: EQAO / Fraser Institute results
-- Transit: TTC stop locations (GTFS); Parks: Parks & Recreation facilities
-- Prices: your MLS / TRREB stats
+## Data
+`data/neighbourhoods.js` covers all **158 official City of Toronto neighbourhoods**, scored 1–10 from open data: Toronto Open Data (boundaries, 2021 Census profiles, green space, TTC schedules), Toronto Police crime rates, Ontario EQAO school results and OpenStreetMap. Sources, licences and how each score is worked out: [data/SOURCES.md](data/SOURCES.md).
+
+To refresh it (e.g. when Toronto Police publish a new year):
+```bash
+pip install -r scripts/requirements.txt
+python scripts/build_data.py --raw ../nf-raw-data
+```
 
 ## Next steps
 - Add GA4 / Meta Pixel snippet to `index.html` (the `track()` hook already fires `step_view` and `lead`).
