@@ -103,25 +103,28 @@
     };
     Object.assign(lead, leadScore(lead));
 
-    const saved = JSON.parse(localStorage.getItem("nf_leads") || "[]");
-    saved.push(lead); localStorage.setItem("nf_leads", JSON.stringify(saved));
-
-    if (C.leadEndpoint) {
-      try {
-        // text/plain avoids a CORS preflight, which Apps Script can't answer.
-        await fetch(C.leadEndpoint, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(lead) });
-      } catch (err) { console.warn("Lead send failed", err); }
-    } else {
-      console.info("[NeighbourFit] No leadEndpoint set in config.js — lead kept in localStorage only:", lead);
-    }
+    await sendLead(lead);
     track("lead", { tier: lead.tier });
-    renderReport(lead.name);
+    renderReport(lead);
     show(4);
   });
 
+  async function sendLead(lead) {
+    const saved = JSON.parse(localStorage.getItem("nf_leads") || "[]");
+    saved.push(lead); localStorage.setItem("nf_leads", JSON.stringify(saved));
+    if (!C.leadEndpoint) {
+      console.info("[NeighbourFit] No leadEndpoint set in config.js — lead kept in localStorage only:", lead);
+      return;
+    }
+    try {
+      // text/plain avoids a CORS preflight, which Apps Script can't answer.
+      await fetch(C.leadEndpoint, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(lead) });
+    } catch (err) { console.warn("Lead send failed", err); }
+  }
+
   // ---------- Report ----------
-  function renderReport(name) {
-    $("#report-title").textContent = `${name}, here's where you fit`;
+  function renderReport(lead) {
+    $("#report-title").textContent = `${lead.name}, here's where you fit`;
     const bars = (h) => FACTORS.map((f) =>
       `<div class="bar">${f.label}<i><b style="width:${h[f.key] * 10}%"></b></i></div>`).join("");
     $("#report").innerHTML = ranked.slice(0, 5).map((h) => `
@@ -138,14 +141,45 @@
     cta.innerHTML = `<p><strong></strong></p><p class="small"></p>`;
     cta.querySelector("strong").textContent = `Want to see homes in ${ranked[0].name}?`;
     const who = C.agentName ? `${C.agentName}, ${C.agentTitle},` : "A local Toronto expert";
-    cta.querySelector(".small").textContent = `${who} can send you current listings and what they're really selling for.`;
+    cta.querySelector(".small").textContent = `${who} can call you with current listings and what they're really selling for.`;
     if (C.bookingUrl) {
       const a = document.createElement("a");
       a.className = "btn primary"; a.href = C.bookingUrl; a.target = "_blank"; a.rel = "noopener";
       a.textContent = "Book a free 15-min call";
       cta.appendChild(a);
+    } else {
+      cta.appendChild(callbackForm(lead));
     }
     highlight(ranked.slice(0, 5));
+  }
+
+  // "Have someone call me" — sent as its own HOT row so it triggers an instant email.
+  function callbackForm(lead) {
+    const f = document.createElement("form");
+    f.className = "callback";
+    f.innerHTML = `
+      <input name="phone" type="tel" placeholder="Best phone number" required autocomplete="tel" />
+      <select name="when" aria-label="Best time to call">
+        <option>Anytime</option><option>Mornings</option><option>Afternoons</option><option>Evenings</option><option>Weekends</option>
+      </select>
+      <button class="btn primary" type="submit">Have someone call me</button>`;
+    f.phone.value = lead.phone || "";
+    f.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const btn = f.querySelector("button");
+      btn.disabled = true; btn.textContent = "Sending…";
+      await sendLead({
+        ...lead,
+        createdAt: new Date().toISOString(),
+        phone: f.phone.value.trim(),
+        stage: `CALL REQUESTED (${f.when.value}) — ${lead.stage}`,
+        tier: "HOT",
+        score: 100
+      });
+      track("callback_request", {});
+      f.innerHTML = `<p class="done">✓ Got it — expect a call ${f.when.value === "Anytime" ? "soon" : "in the " + f.when.value.toLowerCase().replace("weekends", "weekend")}.</p>`;
+    });
+    return f;
   }
 
   // Hook for analytics (GA4 / Meta pixel). No-op unless gtag/fbq is on the page.
