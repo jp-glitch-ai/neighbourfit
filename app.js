@@ -16,6 +16,23 @@
   if (C.brokerage) $("#disclaimer-agent").textContent = `${C.agentName}, ${C.agentTitle} · ${C.brokerage} · `;
   if (C.agentSite) $("#site-link").href = C.agentSite;
 
+  // ---------- Google Ads tag (loads only when googleAdsId is set in config.js) ----------
+  if (C.googleAdsId) {
+    const s = document.createElement("script");
+    s.async = true; s.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(C.googleAdsId)}`;
+    document.head.appendChild(s);
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function () { window.dataLayer.push(arguments); };
+    window.gtag("js", new Date());
+    window.gtag("config", C.googleAdsId);
+  }
+  // Report a Google Ads conversion (no-op until both IDs are set).
+  function adsConversion(value) {
+    if (window.gtag && C.googleAdsId && C.googleAdsLeadLabel) {
+      window.gtag("event", "conversion", { send_to: `${C.googleAdsId}/${C.googleAdsLeadLabel}`, value, currency: "CAD" });
+    }
+  }
+
   // ---------- Map ----------
   const map = L.map("map", { zoomControl: false, attributionControl: true }).setView([43.70, -79.40], 11);
   // OSM tiles, darkened via CSS (.leaflet-tile-pane). Swap for a Mapbox/Stadia key at scale.
@@ -206,5 +223,7 @@
   function track(event, params) {
     if (window.gtag) window.gtag("event", event, params);
     if (window.fbq && event === "lead") window.fbq("track", "Lead");
+    if (event === "lead") adsConversion(params && params.tier === "HOT" ? 50 : params && params.tier === "WARM" ? 20 : 5);
+    if (event === "callback_request") adsConversion(100);
   }
 })();
