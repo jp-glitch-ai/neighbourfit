@@ -3,76 +3,90 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>NeighbourFit — find your Toronto neighbourhood</title>
-  <meta name="description" content="Answer a few quick questions and get your best-fit Toronto neighbourhoods, ranked." />
+  <title>NeighbourFit — choose your Toronto neighbourhood as carefully as your home</title>
+  <meta name="description" content="Schools, safety, commute, green space and value — weighed against what matters to you. Your Toronto neighbourhood shortlist in 60 seconds, free." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <link rel="stylesheet" href="styles.css?v=4" />
+  <link rel="stylesheet" href="styles.css?v=5" />
 </head>
 <body>
+  <header class="topbar">
+    <a class="logo" href="./">NeighbourFit<small>An educated approach to where you live</small></a>
+    <a class="tag" id="site-link" href="https://homeistoronto.ca" target="_blank" rel="noopener">homeistoronto.ca ↗</a>
+  </header>
+
   <div id="map"></div>
 
   <main class="panel" id="panel">
     <!-- Step 0: hero -->
     <section class="step active" data-step="hero">
-      <p class="eyebrow">Toronto · <span id="n-count"></span> neighbourhoods · 8 factors</p>
-      <h1>Find the neighbourhood<br /><em>before</em> the house.</h1>
-      <p class="lead">Tell us what matters. We rank every neighbourhood on schools, safety, transit, parks and more — in under a minute.</p>
-      <button class="btn primary" data-next>Find my match →</button>
+      <p class="eyebrow">Toronto · <span id="n-count"></span> neighbourhoods</p>
+      <h1>Choose the neighbourhood <em>as carefully</em> as the home.</h1>
+      <p class="lead">Schools, safety, commute, green space and long-term value — weighed against what matters to you. Get your personal shortlist in about a minute, before you spend a single weekend at open houses.</p>
+      <button class="btn primary" data-next>Build my shortlist</button>
+      <ul class="proof">
+        <li><b>60 sec</b>to your shortlist</li>
+        <li><b>8</b>factors weighed</li>
+        <li><b>Free</b>no obligation</li>
+      </ul>
     </section>
 
     <!-- Step 1: priorities -->
     <section class="step" data-step="priorities">
       <p class="eyebrow">Step 1 of 3</p>
-      <h2>How much does each matter?</h2>
+      <h2>What matters most to you?</h2>
       <div id="sliders"></div>
-      <button class="btn primary" data-next>Next →</button>
+      <button class="btn primary" data-next>Next</button>
     </section>
 
     <!-- Step 2: situation -->
     <section class="step" data-step="situation">
       <p class="eyebrow">Step 2 of 3</p>
-      <h2>A bit about your move</h2>
-      <label>Budget
-        <select id="budget">
-          <option value="800">Under $800K</option>
-          <option value="1200">$800K – $1.2M</option>
-          <option value="1800" selected>$1.2M – $1.8M</option>
-          <option value="2500">$1.8M – $2.5M</option>
-          <option value="99999">$2.5M+</option>
+      <h2>Tell us about your plans</h2>
+      <label>What are you looking to do?
+        <select id="stage">
+          <option value="buy">Buy a home</option>
+          <option value="upsize">Sell and buy (moving up)</option>
+          <option value="invest">Buy an investment property</option>
+          <option value="relocate">Relocate to Toronto</option>
+          <option value="first">Buy my first home</option>
         </select>
       </label>
-      <label>When are you hoping to move?
+      <label>Budget
+        <select id="budget">
+          <option value="1000">Under $1M</option>
+          <option value="1500" selected>$1M – $1.5M</option>
+          <option value="2000">$1.5M – $2M</option>
+          <option value="3000">$2M – $3M</option>
+          <option value="99999">$3M+</option>
+        </select>
+      </label>
+      <label>Ideal timing
         <select id="timeline">
           <option value="0-3">Within 3 months</option>
           <option value="3-6" selected>3 – 6 months</option>
           <option value="6-12">6 – 12 months</option>
-          <option value="12+">Just exploring</option>
-        </select>
-      </label>
-      <label>Are you…
-        <select id="stage">
-          <option value="first">Buying my first home</option>
-          <option value="upsize">Selling &amp; buying</option>
-          <option value="relocate">Relocating to Toronto</option>
-          <option value="invest">Investing</option>
+          <option value="12+">Planning ahead (12+ months)</option>
         </select>
       </label>
       <label class="check"><input type="checkbox" id="preapproved" /> I'm already pre-approved for a mortgage</label>
-      <button class="btn primary" data-next>See my matches →</button>
+      <button class="btn primary" data-next>See my matches</button>
     </section>
 
     <!-- Step 3: teaser + gate -->
     <section class="step" data-step="gate">
       <p class="eyebrow">Step 3 of 3</p>
-      <h2>Your top matches are ready</h2>
+      <h2>Your shortlist is ready</h2>
       <ol id="teaser" class="teaser"></ol>
       <form id="lead-form">
-        <p class="small">Get the full report — scores for every factor, all ranked neighbourhoods, and what homes there cost.</p>
+        <p class="small">Unlock your full report: every factor scored, your complete ranking, and what homes in each neighbourhood typically cost. Free and private.</p>
         <input id="name" placeholder="First name" required autocomplete="given-name" />
         <input id="email" type="email" placeholder="Email" required autocomplete="email" />
         <input id="phone" type="tel" placeholder="Phone (optional)" autocomplete="tel" />
-        <label class="check small"><input type="checkbox" id="consent" required /> Email me my report and occasional local market updates. Unsubscribe anytime.</label>
-        <button class="btn primary" type="submit">Unlock full report</button>
+        <label class="check small"><input type="checkbox" id="consent" required /> Email me my report and occasional Toronto market insights. Unsubscribe anytime.</label>
+        <button class="btn primary" type="submit">Unlock my report</button>
       </form>
     </section>
 
@@ -86,11 +100,11 @@
     </section>
   </main>
 
-  <p class="disclaimer">Scores compare Toronto's 158 neighbourhoods using open data. <a href="data/SOURCES.md" target="_blank" rel="noopener">Sources</a></p>
+  <p class="disclaimer"><span id="disclaimer-agent"></span>Scores compare Toronto's 158 neighbourhoods using open data. <a href="data/SOURCES.md" target="_blank" rel="noopener">Sources</a></p>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="config.js?v=4"></script>
-  <script src="data/neighbourhoods.js?v=4"></script>
-  <script src="app.js?v=4"></script>
+  <script src="config.js?v=5"></script>
+  <script src="data/neighbourhoods.js?v=5"></script>
+  <script src="app.js?v=5"></script>
 </body>
 </html>

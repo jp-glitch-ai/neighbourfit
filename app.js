@@ -11,8 +11,10 @@
     return v.length ? v[Math.floor(v.length / 2)] : Infinity;
   })();
 
-  document.title = `${C.brand} — find your Toronto neighbourhood`;
+  document.title = `${C.brand} — choose your Toronto neighbourhood as carefully as your home`;
   $("#n-count").textContent = HOODS.length;
+  if (C.brokerage) $("#disclaimer-agent").textContent = `${C.agentName}, ${C.agentTitle} · ${C.brokerage} · `;
+  if (C.agentSite) $("#site-link").href = C.agentSite;
 
   // ---------- Map ----------
   const map = L.map("map", { zoomControl: false, attributionControl: true }).setView([43.70, -79.40], 11);
@@ -21,7 +23,7 @@
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>', maxZoom: 18
   }).addTo(map);
   const markers = HOODS.map((h) =>
-    L.circleMarker([h.lat, h.lng], { radius: 6, color: "#5eead4", weight: 1, fillOpacity: 0.35 })
+    L.circleMarker([h.lat, h.lng], { radius: 6, color: "#2357d6", weight: 1, fillOpacity: 0.35 })
       .bindTooltip(h.name).addTo(map)
   );
 
@@ -69,12 +71,12 @@
     highlight(ranked.slice(0, 3));
   }
   function highlight(top) {
-    markers.forEach((m) => m.setStyle({ radius: 5, fillOpacity: 0.2, color: "#3b4b66" }));
-    top.forEach((h) => markers[h.i].setStyle({ radius: 11, fillOpacity: 0.7, color: "#5eead4" }).bringToFront());
+    markers.forEach((m) => m.setStyle({ radius: 5, fillOpacity: 0.2, color: "#9aa6b5", fillColor: "#9aa6b5" }));
+    top.forEach((h) => markers[h.i].setStyle({ radius: 11, fillOpacity: 0.75, color: "#b58e43", fillColor: "#b58e43" }).bringToFront());
     map.flyToBounds(L.latLngBounds(top.map((h) => [h.lat, h.lng])).pad(0.6), { duration: 1.2 });
   }
   function resetMap() {
-    markers.forEach((m) => m.setStyle({ radius: 6, fillOpacity: 0.35, color: "#5eead4" }));
+    markers.forEach((m) => m.setStyle({ radius: 6, fillOpacity: 0.35, color: "#2357d6", fillColor: "#2357d6" }));
     map.flyTo([43.70, -79.40], 11);
   }
 
@@ -84,7 +86,7 @@
     if (d.preapproved) s += 25;
     if (d.phone) s += 15;
     if (d.stage === "upsize") s += 20;       // also a listing opportunity
-    else if (d.stage === "relocate") s += 10;
+    else if (d.stage === "relocate" || d.stage === "invest") s += 10;
     const tier = s >= 60 ? "HOT" : s >= 30 ? "WARM" : "NURTURE";
     return { score: s, tier };
   }
@@ -154,10 +156,12 @@
       const h = HOODS[+c.dataset.i]; map.flyTo([h.lat, h.lng], 14); markers[+c.dataset.i].openTooltip();
     }));
     const cta = $("#cta");
-    cta.innerHTML = `<p><strong></strong></p><p class="small"></p>`;
-    cta.querySelector("strong").textContent = `Want to see homes in ${ranked[0].name}?`;
-    const who = C.agentName ? `${C.agentName}, ${C.agentTitle},` : "A local Toronto expert";
-    cta.querySelector(".small").textContent = `${who} can call you with current listings and what they're really selling for.`;
+    cta.innerHTML = `<p class="who"></p><p><strong></strong></p><p class="small"></p>`;
+    cta.querySelector(".who").textContent = C.agentName ? `${C.agentName}, ${C.agentTitle}` : "A local Toronto expert";
+    cta.querySelector("strong").textContent = `Want a private look at ${ranked[0].name}?`;
+    cta.querySelector(".small").textContent = C.agentName
+      ? `I'll call with what's listed, what's coming up quietly, and what homes there actually sell for — so you can decide with real numbers.`
+      : `Get a call with what's listed, what's coming up, and what homes there actually sell for.`;
     if (C.bookingUrl) {
       const a = document.createElement("a");
       a.className = "btn primary"; a.href = C.bookingUrl; a.target = "_blank"; a.rel = "noopener";
