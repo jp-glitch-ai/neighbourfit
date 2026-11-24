@@ -137,7 +137,8 @@
     const cta = $("#cta");
     cta.innerHTML = `<p><strong></strong></p><p class="small"></p>`;
     cta.querySelector("strong").textContent = `Want to see homes in ${ranked[0].name}?`;
-    cta.querySelector(".small").textContent = `${C.agentName}, ${C.agentTitle}, can send you current listings and what they're really selling for.`;
+    const who = C.agentName ? `${C.agentName}, ${C.agentTitle},` : "A local Toronto expert";
+    cta.querySelector(".small").textContent = `${who} can send you current listings and what they're really selling for.`;
     if (C.bookingUrl) {
       const a = document.createElement("a");
       a.className = "btn primary"; a.href = C.bookingUrl; a.target = "_blank"; a.rel = "noopener";

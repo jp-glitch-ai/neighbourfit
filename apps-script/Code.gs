@@ -3,7 +3,7 @@
  * Deploy > New deployment > Web app > Execute as: Me, Who has access: Anyone.
  * Copy the /exec URL into config.js -> leadEndpoint.
  */
-const NOTIFY_EMAIL = Session.getActiveUser().getEmail(); // or hard-code your address
+const NOTIFY_EMAIL = Session.getEffectiveUser().getEmail(); // the script owner; or hard-code an address
 const NOTIFY_TIERS = ["HOT", "WARM"];                     // which leads trigger an instant email
 
 const COLUMNS = ["createdAt", "tier", "score", "name", "email", "phone", "stage", "timeline",
@@ -30,8 +30,17 @@ function doPost(e) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
+// Set to your Sheet's ID (from its URL) when using a standalone script; leave "" if the script is bound to the Sheet.
+const SHEET_ID = "";
+
+// Run once from the editor: creates the Leads tab and asks for permissions.
+function setup() {
+  getSheet_();
+  Logger.log("Ready. Hot-lead emails go to " + NOTIFY_EMAIL + " (quota left: " + MailApp.getRemainingDailyQuota() + ")");
+}
+
 function getSheet_() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = SHEET_ID ? SpreadsheetApp.openById(SHEET_ID) : SpreadsheetApp.getActiveSpreadsheet();
   let sh = ss.getSheetByName("Leads");
   if (!sh) {
     sh = ss.insertSheet("Leads");
