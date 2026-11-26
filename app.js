@@ -58,7 +58,14 @@
       show(current + 1);
     })
   );
-  $("#restart").addEventListener("click", () => { resetMap(); show(0); });
+  $("#restart").addEventListener("click", () => {
+    resetMap();
+    // Allow a fresh lead after "Start over" (the double-submit guard is per lead, not per visit).
+    submitting = false;
+    const b = $("#lead-form button[type=submit]");
+    b.disabled = false; b.textContent = "Unlock my report";
+    show(0);
+  });
 
   // ---------- Sliders ----------
   $("#sliders").innerHTML = FACTORS.map((f) => `
@@ -130,7 +137,8 @@
       topMatches: ranked.slice(0, 3).map((h) => `${h.name} (${h.match}%)`).join(", "),
       source: q.get("utm_source") || document.referrer || "direct",
       // gclid lets you later match a closed deal back to the exact Google Ads click.
-      campaign: [q.get("utm_campaign"), q.get("gclid") && `gclid:${q.get("gclid")}`].filter(Boolean).join(" ")
+      campaign: [q.get("utm_campaign"), q.get("gclid") && `gclid:${q.get("gclid")}`].filter(Boolean).join(" "),
+      website: $("#website").value // spam trap; the receiver ignores leads where this is filled
     };
     Object.assign(lead, leadScore(lead));
 
@@ -208,8 +216,11 @@
       </select>
       <button class="btn primary" type="submit">Have someone call me</button>`;
     f.phone.value = lead.phone || "";
+    let sent = false; // one call request per report
     f.addEventListener("submit", async (e) => {
       e.preventDefault();
+      if (sent) return;
+      sent = true;
       const btn = f.querySelector("button");
       btn.disabled = true; btn.textContent = "Sending…";
       await sendLead({

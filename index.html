@@ -85,7 +85,10 @@
         <input id="name" placeholder="First name" required autocomplete="given-name" />
         <input id="email" type="email" placeholder="Email" required autocomplete="email" />
         <input id="phone" type="tel" placeholder="Phone (optional)" autocomplete="tel" />
+        <!-- Spam trap: hidden from people, bots fill it in. -->
+        <input id="website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0" />
         <label class="check small"><input type="checkbox" id="consent" required /> Email me my report and occasional Toronto market insights. Unsubscribe anytime.</label>
+        <p class="small privacy">Your details go only to Jason Pittelli, REALTOR® (Bosley Real Estate Ltd., Brokerage) to send your report and follow up about your move. Never sold or shared. To see or delete them anytime, contact Jason through <a href="https://homeistoronto.ca" target="_blank" rel="noopener">homeistoronto.ca</a>.</p>
         <button class="btn primary" type="submit">Unlock my report</button>
       </form>
     </section>
