@@ -5,11 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>NeighbourhoodFit — choose your Toronto neighbourhood as carefully as your home</title>
   <meta name="description" content="Schools, safety, commute, green space and value — weighed against what matters to you. Your Toronto neighbourhood shortlist in 60 seconds, free." />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <meta property="og:title" content="NeighbourhoodFit — your Toronto neighbourhood shortlist in 60 seconds" />
+  <meta property="og:description" content="Schools, safety, commute, green space and value, scored across Toronto's 158 neighbourhoods. Free and private." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://jp-glitch-ai.github.io/neighbourfit/" />
+  <meta name="theme-color" content="#0f1b2d" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <link rel="stylesheet" href="styles.css?v=9" />
+  <link rel="stylesheet" href="styles.css?v=10" />
 </head>
 <body>
   <header class="topbar">
@@ -88,7 +94,7 @@
         <!-- Spam trap: hidden from people, bots fill it in. -->
         <input id="website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0" />
         <label class="check small"><input type="checkbox" id="consent" required /> Email me my report and occasional Toronto market insights. Unsubscribe anytime.</label>
-        <p class="small privacy">Your details go only to Jason Pittelli, REALTOR® (Bosley Real Estate Ltd., Brokerage) to send your report and follow up about your move. Never sold or shared. To see or delete them anytime, contact Jason through <a href="https://homeistoronto.ca" target="_blank" rel="noopener">homeistoronto.ca</a>.</p>
+        <p class="small privacy">Your details go only to Jason Pittelli, REALTOR® (Bosley Real Estate Ltd., Brokerage) to send your report and follow up about your move. Never sold or shared. To see or delete them anytime, contact Jason through <a href="https://homeistoronto.ca" target="_blank" rel="noopener">homeistoronto.ca</a>. <a href="privacy.html" target="_blank" rel="noopener">Privacy policy</a></p>
         <button class="btn primary" type="submit">Unlock my report</button>
       </form>
     </section>
@@ -103,11 +109,11 @@
     </section>
   </main>
 
-  <p class="disclaimer"><span id="disclaimer-agent"></span>Scores compare Toronto's 158 neighbourhoods using open data. <a href="data/SOURCES.md" target="_blank" rel="noopener">Sources</a></p>
+  <p class="disclaimer"><span id="disclaimer-agent"></span>Scores compare Toronto's 158 neighbourhoods using open data. <a href="data/SOURCES.md" target="_blank" rel="noopener">Sources</a> · <a href="privacy.html">Privacy</a></p>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="config.js?v=9"></script>
-  <script src="data/neighbourhoods.js?v=9"></script>
-  <script src="app.js?v=9"></script>
+  <script src="config.js?v=10"></script>
+  <script src="data/neighbourhoods.js?v=10"></script>
+  <script src="app.js?v=10"></script>
 </body>
 </html>
