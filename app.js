@@ -109,8 +109,14 @@
   }
 
   // ---------- Lead capture ----------
+  let submitting = false; // guards against double-clicks creating duplicate leads/conversions
   $("#lead-form").addEventListener("submit", async (e) => {
     e.preventDefault();
+    if (submitting) return;
+    submitting = true;
+    const btn = $("#lead-form button[type=submit]");
+    btn.disabled = true; btn.textContent = "Preparing your report…";
+    const q = new URLSearchParams(location.search);
     const lead = {
       createdAt: new Date().toISOString(),
       name: $("#name").value.trim(),
@@ -122,8 +128,9 @@
       preapproved: $("#preapproved").checked,
       priorities: FACTORS.map((f) => `${f.key}:${weights[f.key]}`).join(" "),
       topMatches: ranked.slice(0, 3).map((h) => `${h.name} (${h.match}%)`).join(", "),
-      source: new URLSearchParams(location.search).get("utm_source") || document.referrer || "direct",
-      campaign: new URLSearchParams(location.search).get("utm_campaign") || ""
+      source: q.get("utm_source") || document.referrer || "direct",
+      // gclid lets you later match a closed deal back to the exact Google Ads click.
+      campaign: [q.get("utm_campaign"), q.get("gclid") && `gclid:${q.get("gclid")}`].filter(Boolean).join(" ")
     };
     Object.assign(lead, leadScore(lead));
 
