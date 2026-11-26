@@ -1,6 +1,6 @@
 // Edit these to make the site yours.
 window.CONFIG = {
-  brand: "NeighbourFit",
+  brand: "NeighbourhoodFit",
   agentName: "Jason Pittelli",       // shown on the report CTA; "" = "A local Toronto expert"
   agentTitle: "REALTOR®",
   brokerage: "Bosley Real Estate Ltd., Brokerage",
