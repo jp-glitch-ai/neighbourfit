@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Private Off-Market List — Toronto investors | Jason Pittelli, REALTOR®</title>
+  <meta name="description" content="Join a private list of Toronto off-market, power-of-sale and multiplex opportunities for cash and pre-approved buyers. Free to join." />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" />
+  <link rel="stylesheet" href="styles.css?v=10" />
+  <style>
+    body { background: var(--sky); }
+    .om { max-width: 560px; margin: 96px auto 48px; padding: 32px; background: #fff; border-radius: 18px; box-shadow: 0 12px 40px rgba(15,27,45,.14); }
+    .om ul.points { padding-left: 18px; color: var(--slate); line-height: 1.7; font-size: 15px; }
+    .om fieldset { border: 0; padding: 0; margin: 0 0 14px; }
+    .om legend { font-size: 14px; color: var(--slate); margin-bottom: 6px; }
+    .om .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .om .chips label { display: inline-flex; gap: 6px; align-items: center; margin: 0; padding: 8px 12px; border: 1px solid var(--line); border-radius: 999px; font-size: 13px; color: var(--navy); }
+    .om .hp { position: absolute; left: -9999px; }
+    .om .done { color: #1e7b34; font-weight: 500; }
+    .om .fine { font-size: 12px; color: var(--muted); margin-top: 18px; line-height: 1.5; }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="logo" href="./"><span class="logo-a">Neighbourhood</span><span class="logo-b">Fit</span><small>An educated approach to where you live</small></a>
+    <a class="tag" href="https://homeistoronto.ca" target="_blank" rel="noopener">homeistoronto.ca ↗</a>
+  </header>
+
+  <main class="om">
+    <p class="eyebrow">Private investor list · Toronto &amp; GTA</p>
+    <h1>See off-market deals <em>before</em> everyone else.</h1>
+    <p class="lead">A private, free list for cash and pre-approved buyers. When an off-market, power-of-sale or multiplex opportunity matches what you're looking for, you hear about it first — by email, with the numbers.</p>
+    <ul class="points">
+      <li>Multiplexes, fixer-uppers, power-of-sale and quiet sales across the GTA</li>
+      <li>Matched to your budget, areas and property type — no inbox flood</li>
+      <li>No cost, no obligation, unsubscribe anytime</li>
+    </ul>
+
+    <form id="om-form" novalidate>
+      <input id="name" placeholder="First name" required autocomplete="given-name" />
+      <input id="email" type="email" placeholder="Email" required autocomplete="email" />
+      <input id="phone" type="tel" placeholder="Phone (optional — for time-sensitive deals)" autocomplete="tel" />
+      <input class="hp" id="website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+      <label>How would you buy?
+        <select id="power">
+          <option value="cash">Cash</option>
+          <option value="preapproved" selected>Mortgage pre-approved</option>
+          <option value="financing">Still arranging financing</option>
+        </select>
+      </label>
+      <label>Budget
+        <select id="budget">
+          <option>Under $750K</option>
+          <option selected>$750K – $1.25M</option>
+          <option>$1.25M – $2M</option>
+          <option>$2M+</option>
+        </select>
+      </label>
+      <label>When could you act?
+        <select id="timeline">
+          <option value="0-3">Within 3 months</option>
+          <option value="3-6" selected>3 – 6 months</option>
+          <option value="6-12">6 – 12 months</option>
+          <option value="12+">Just watching the market</option>
+        </select>
+      </label>
+      <fieldset>
+        <legend>Property types (pick any)</legend>
+        <div class="chips" id="types">
+          <label><input type="checkbox" value="Multiplex" checked /> Multiplex</label>
+          <label><input type="checkbox" value="Power of sale" /> Power of sale</label>
+          <label><input type="checkbox" value="Fixer-upper" /> Fixer-upper</label>
+          <label><input type="checkbox" value="Detached/semi" /> Detached / semi</label>
+          <label><input type="checkbox" value="Condo" /> Condo</label>
+        </div>
+      </fieldset>
+      <label>Areas you'd buy in (optional)
+        <input id="areas" placeholder="e.g. East York, Leslieville, anywhere in the 416" />
+      </label>
+      <label class="check small"><input type="checkbox" id="consent" required /> Email me matching off-market opportunities and occasional market updates from Jason Pittelli. Unsubscribe anytime.</label>
+      <p class="small" id="err" role="alert"></p>
+      <button class="btn primary" type="submit">Join the private list</button>
+    </form>
+
+    <p class="fine">Jason Pittelli, REALTOR® · Bosley Real Estate Ltd., Brokerage. Opportunities are shared subject to the seller's permission and are not guaranteed to be available. No returns are promised; do your own due diligence. <a href="privacy.html">Privacy</a></p>
+  </main>
+
+  <script src="config.js?v=10"></script>
+  <script>
+  (() => {
+    const C = window.CONFIG, $ = (s) => document.querySelector(s);
+    if (C.googleAdsId) {
+      const s = document.createElement("script"); s.async = true;
+      s.src = "https://www.googletagmanager.com/gtag/js?id=" + encodeURIComponent(C.googleAdsId);
+      document.head.appendChild(s);
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = function () { dataLayer.push(arguments); };
+      gtag("js", new Date()); gtag("config", C.googleAdsId);
+    }
+    const score = (d) => {
+      let s = { cash: 50, preapproved: 35, financing: 0 }[d.power] || 0;
+      s += { "0-3": 30, "3-6": 15 }[d.timeline] || 0;
+      if (d.phone) s += 15;
+      return { score: s, tier: s >= 60 ? "HOT" : s >= 30 ? "WARM" : "NURTURE" };
+    };
+    let busy = false;
+    $("#om-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (busy) return;
+      const name = $("#name").value.trim(), email = $("#email").value.trim();
+      if (!name || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) || !$("#consent").checked) {
+        $("#err").textContent = "Please add your first name, a valid email and tick the consent box.";
+        return;
+      }
+      busy = true;
+      if ($("#website").value) { $("#om-form").innerHTML = '<p class="done">✓ Thanks — you\'re on the list.</p>'; return; } // spam trap: no lead, no ad conversion
+      const btn = $("#om-form button"); btn.disabled = true; btn.textContent = "Adding you…";
+      const q = new URLSearchParams(location.search);
+      const power = $("#power").value;
+      const types = [...document.querySelectorAll("#types input:checked")].map((i) => i.value).join(", ");
+      const lead = {
+        createdAt: new Date().toISOString(), name, email,
+        phone: $("#phone").value.trim(), website: $("#website").value,
+        stage: "CASH BUYER LIST — " + $("#power").selectedOptions[0].text,
+        timeline: $("#timeline").value, preapproved: power !== "financing",
+        budget: $("#budget").value,
+        topMatches: "Types: " + (types || "any") + " | Areas: " + ($("#areas").value.trim() || "any"),
+        priorities: "offmarket-list",
+        source: q.get("utm_source") || document.referrer || "direct",
+        campaign: [q.get("utm_campaign"), q.get("gclid") && "gclid:" + q.get("gclid")].filter(Boolean).join(" ")
+      };
+      Object.assign(lead, score({ power, timeline: lead.timeline, phone: lead.phone }));
+      try {
+        if (C.leadEndpoint) await fetch(C.leadEndpoint, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(lead) });
+      } catch (err) { console.warn("Signup send failed", err); }
+      try { localStorage.setItem("nf_offmarket_signup", JSON.stringify(lead)); } catch (_) {}
+      if (window.gtag && C.googleAdsId && C.googleAdsLeadLabel) {
+        gtag("event", "conversion", { send_to: C.googleAdsId + "/" + C.googleAdsLeadLabel, value: lead.tier === "HOT" ? 50 : lead.tier === "WARM" ? 20 : 5, currency: "CAD" });
+      }
+      $("#om-form").innerHTML = '<p class="done">✓ You\'re on the list, ' + name.replace(/[<>&"]/g, "") + '. Jason will email you when a matching opportunity comes up.</p>';
+    });
+  })();
+  </script>
+</body>
+</html>
